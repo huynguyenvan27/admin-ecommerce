@@ -47,7 +47,7 @@ export default function ProductsList() {
   }
 
   return (
-    <div >
+    <div style={{overflowX: "auto"}}>
       <table className='table text-center align-middle' id='list-products'> 
         <thead>
           <tr>
