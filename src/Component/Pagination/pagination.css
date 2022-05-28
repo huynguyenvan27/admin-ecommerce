@@ -1,0 +1,11 @@
+
+.page-link.disabled {
+  display: none;
+} 
+.page-link.active{
+  background-color: black !important;
+  color: white;
+}
+.page-link{
+  color: black;
+}

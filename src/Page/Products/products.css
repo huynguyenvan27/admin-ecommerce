@@ -1,0 +1,9 @@
+.btn-remove{
+  border:none !important;
+  background-color: #f3f3f3 !important;
+  color: red;
+  background-color: red;
+}
+#list-products{
+  background-color: #f3f3f3;
+}
