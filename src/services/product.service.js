@@ -11,8 +11,7 @@ const productApi = createApi({
       query: ( id ) => `products/${id}`,
     }),
     createProduct: builder.mutation({
-      query: (data
-        ) => {
+      query: (data) => {
           return {
               url: "products",
               method: "POST",
@@ -29,10 +28,11 @@ const productApi = createApi({
       },
     }),
     updateProduct : builder.mutation({
-      query:(id) =>{
+      query:(data) =>{
         return{
-          url: `products/${id}`,
-          method: "PUT"
+          url: `products/${data.id}`,
+          method: "PUT",
+          body: data
         }
       }
     })

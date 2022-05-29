@@ -11,6 +11,7 @@ import Pagination from '../../Component/Pagination/Pagination';
 import "./products.css";
 import { formatter } from '../../util';
 import { Link } from 'react-router-dom';
+
 export default function ProductsList() {
   const dispatch = useDispatch()
   const {data,isFetching,error} = useGetAllProductsQuery()
@@ -20,7 +21,6 @@ export default function ProductsList() {
 
   const indexOfLastProducts = currentPage*productsPerPage;
   const indexOfFirstProducts = indexOfLastProducts - productsPerPage;
-  console.log(listProducts);
   const handleDetele =  async(id) => {
     await fetch('https://ecommerce-hyy.herokuapp.com/products/' + id, { method: 'DELETE',})
     dispatch(removeProduct(id))
@@ -45,6 +45,8 @@ export default function ProductsList() {
   const handlePrev = () => {
     setCurrentPage(currentPage-1)
   }
+  console.log(data);
+
 
   return (
     <div style={{overflowX: "auto"}}>

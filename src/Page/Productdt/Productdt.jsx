@@ -1,40 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useUpdateProductMutation } from '../../services/product.service'
 import { useForm } from 'react-hook-form'
 import { useGetProductByIdQuery } from '../../services/product.service'
-import SizeList from '../AddProduct/SizeList'
 import { useState } from 'react'
+import { convertBase64 } from '../../util'
+import Loading from '../../Component/Loading/Loading'
 export default function Productdt() {
-  const  [size,setSize] = useState([])
   const {id} = useParams()
+  const  [size,setSize] = useState([])
   const {data,isFetching,isSuccess} = useGetProductByIdQuery(id)
-  const [updateProduct] = useUpdateProductMutation()
+
+  const [updateProduct,{isLoading}] = useUpdateProductMutation()
 
   const {handleSubmit,register,formState:{errors},reset,getValues} = useForm()
 
-  
-  const convertBase64 = (file) => {
-    return new Promise((resolve,rejected) =>{
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file)
-      fileReader.onload = () =>{
-        resolve(fileReader.result)
-      };
-      fileReader.onerror = error =>{
-        rejected(error)
-      }
-    })
-  }
-  
+  useEffect ( () => {
+    if(data){
+      setSize(data.list_size)
+    }
+  },[data])
   const handleSize  = (e) => {
     if(e.target.checked){
       setSize([
         ...size,
-        e.target.value
+        +e.target.value
       ])
     }else{
-      const filter = size.filter(item => item !== e.target.value)
+      const filter = size.filter(item => item !== +e.target.value)
       setSize([...filter])
     }
   }
@@ -47,35 +40,51 @@ export default function Productdt() {
       id
     ])
   }
-  console.log(imgList);
   const [imgCover,setImgCover] = useState(false)
 
   const handleDeteleCover = () => {
     setImgCover(true)
   }
-  const list = [];
-  const onSubmit = async (user) => {
-    const list = [...data.imgLg].filter((item,id) => !imgList.includes(id))
-    await(updateProduct({
-      img : [...data.img],
-        ...user,
-        imgDetail:[...list],
-        imgLg: [...list]
-    })
-    )
-    console.log(
-      { 
-        img : [...data.img],
-        ...user,
-        imgDetail:[...list],
-        imgLg: [...list]
-      }
-      
-      );
-  }
   
+  
+  const onSubmit = async (product) => {
+    const arr = []
+
+    for (let i = 0; i < product.imgDetail?.length; i++) {
+      arr.push(convertBase64 (product.imgDetail[i]))
+    }
+    // Convert file image to base 64
+    const base64Detail = await Promise.all(arr)
+    const base64Cover = ""
+    if(product.img){
+      base64Cover = await convertBase64 (product.img[0]) ;
+    }
+    const list = [...data.imgLg].filter((item,id) => !imgList.includes(id))
+    const newData = {
+      ...product,
+      id : data.id,
+      img : data.img.concat(base64Cover),
+      imgDetail:[...list].concat([...base64Detail]),
+      imgLg: [...list].concat([...base64Detail]),
+      list_size : [...size]
+  }
+  console.log(newData);
+    await(updateProduct(newData)
+    )
+  }
+
+  function range(start, end, step = 1) {
+    const len = Math.floor((end - start) / step) + 1
+    return Array(len).fill().map((_, idx) => start + (idx * step))
+  }
+
+  var result = range(35, 45, 0.5);
+
   if(isFetching){
-    return <p>...isLoading</p>
+    return <Loading/>
+  }
+  if(isLoading){
+    return <Loading/>
   }
   return (
     <div className="container">
@@ -122,7 +131,17 @@ export default function Productdt() {
 
             <div className="mb-3">
               <label htmlFor="brand" className="form-label">Chọn Size</label>
-              <SizeList handleSize = {handleSize} />
+              <div>
+              {
+                result.map(item=>{
+                  return(
+                  <span key= {item}>
+                    <input type="checkbox" name='item' key={item} id={`${item}-category`} value={item} className="d-none" defaultChecked = {data.list_size.includes(item)}  onChange={(e) => handleSize(e)}/>
+                    <label htmlFor= {`${item}-category`} className="btn-size">{item}</label>
+                  </span>
+                    )})
+                }
+              </div>
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">Price</label>
@@ -168,14 +187,14 @@ export default function Productdt() {
                 type="file" 
                 name='img' 
                 id="formFile"
-                {...imgCover ? null : {...register("img",{required:true})} }
+                {...imgCover ?  {...register("img",{required:true})} : null }
                 // {...register("img",{required:true})}
               />
               {errors.img  && <li className='text-danger'>Image Cover is required!</li>}
             </div>
             <div className="text-center">
-              <img className='mb-1'  src={data.img}  width={"300px"} />
-              <button className='btn btn-danger d-block mx-auto' >Detele</button>
+              <img className='mb-1'  src={data.img}  Width={"300px"} />
+              <button className='btn btn-danger d-block mx-auto' onClick = {handleDeteleCover}>Detele</button>
             </div>
             
             <div className="mt-5 mb-3">
@@ -189,14 +208,14 @@ export default function Productdt() {
                 {...imgList.length != data.imgLg.length  ? null : {...register("imgDetail",{required:true})} }
                 // {...register("imgDetail",{required:true})}
                 />
-                {errors.imgDetail && <li className='text-danger' onClick={handleDeteleCover}>Image details is required!</li>}
+                {errors.imgDetail && <li className='text-danger'>Image details is required!</li>}
             </div>
             <div className="row d-flex justify-content-between">
               {
                 data.imgLg?.map((i,id) => {
                   return (
-                    <div className='col-6 mb-5 text-center'>
-                      <img src={i}  width={"300px"} className= "m-1"/>
+                    <div className='col-6 mb-5 text-center' key={id}>
+                      <img src={i}  Width={"300px"} className= "m-1"/>
                       <button className='btn btn-danger d-block mx-auto' onClick={() => handleDetele(id)}>Detele</button>
                     </div>
                   )

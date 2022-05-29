@@ -5,6 +5,7 @@ import Loading from '../../Component/Loading/Loading'
 import SizeList from './SizeList'
 import 'react-toastify/dist/ReactToastify.css';
 import { toast,ToastContainer } from 'react-toastify';
+import { convertBase64 } from '../../util'
 
 export default function AddProduct() {
   const [createProduct,{isError,isSuccess,isLoading}] = useCreateProductMutation()
@@ -21,21 +22,6 @@ export default function AddProduct() {
       const filter = size.filter(item => item !== e.target.value)
       setSize([...filter])
     }
-  }
-
-  // Convert file image to base 64
-
-  const convertBase64 = (file) => {
-    return new Promise((resolve,rejected) =>{
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file)
-      fileReader.onload = () =>{
-        resolve(fileReader.result)
-      };
-      fileReader.onerror = error =>{
-        rejected(error)
-      }
-    })
   }
 
   // validation form

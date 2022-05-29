@@ -1,6 +1,6 @@
 
 import "./SizeList.css"
-const SizeList = ({handleSize}) => {
+const SizeList = ({handleSize,size}) => {
 
   // mảng size
   function range(start, end, step = 1) {
@@ -9,7 +9,7 @@ const SizeList = ({handleSize}) => {
   }
 
   var result = range(35, 45, 0.5);
-
+  
   return (
     <div className="category-size">
       <div className="size-list d-flex flex-wrap justify-content-start">
@@ -17,7 +17,7 @@ const SizeList = ({handleSize}) => {
           result.map(item=>{
             return(
             <span key= {item}>
-              <input type="checkbox" name='item' key={item} id={`${item}-category`} value={item} className="d-none" onChange={(e) => handleSize(e)}/>
+              <input type="checkbox" name='item' key={item} id={`${item}-category`} value={item} className="d-none"  onChange={(e) => handleSize(e)}/>
               <label htmlFor= {`${item}-category`} className="btn-size">{item}</label>
             </span>
               )})
