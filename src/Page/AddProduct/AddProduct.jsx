@@ -70,7 +70,7 @@ export default function AddProduct() {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-8">
+        <div className="col-lg-8 col-sm-12">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-3">
               <label htmlFor="name" className="form-label">Name</label>
@@ -178,8 +178,8 @@ export default function AddProduct() {
               })
             } */}
             <div className="mt-5 mb-5 text-center">
-              <button type='submit' className='btn btn-primary me-5'>ADD</button>
-              <button type='reset' className='btn btn-light'>Reset</button>
+              <button type='submit' className='btn btn-primary mx-3'>ADD</button>
+              <button type='reset' className='btn btn-light mx-3'>Reset</button>
             </div>
           </form>
         </div>

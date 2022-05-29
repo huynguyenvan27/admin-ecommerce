@@ -89,7 +89,7 @@ export default function Productdt() {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-8">
+        <div className="col-lg-8 col-sm-12">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-3">
               <label htmlFor="name" className="form-label">Name</label>
@@ -193,7 +193,7 @@ export default function Productdt() {
               {errors.img  && <li className='text-danger'>Image Cover is required!</li>}
             </div>
             <div className="text-center">
-              <img className='mb-1'  src={data.img}  Width={"300px"} />
+              <img className='mb-1 col-lg-6 col-sm-12' style={{border:"1px solid #ccc"}}  src={data.img}  Width={"100%"} />
               <button className='btn btn-danger d-block mx-auto' onClick = {handleDeteleCover}>Detele</button>
             </div>
             
@@ -214,8 +214,8 @@ export default function Productdt() {
               {
                 data.imgLg?.map((i,id) => {
                   return (
-                    <div className='col-6 mb-5 text-center' key={id}>
-                      <img src={i}  Width={"300px"} className= "m-1"/>
+                    <div className='col-lg-6 col-sm-12 mb-5 text-center' key={id}>
+                      <img src={i}  Width={"100%"} style={{border:"1px solid #ccc"}} className= "m-1"/>
                       <button className='btn btn-danger d-block mx-auto' onClick={() => handleDetele(id)}>Detele</button>
                     </div>
                   )
@@ -224,8 +224,8 @@ export default function Productdt() {
             
             </div>   
             <div className="mt-5 mb-5 text-center">
-              <button type='submit' className='btn btn-primary me-5 '>Update</button>
-              <button className='btn btn-light' type='reset'>Reset</button>
+              <button type='submit' className='btn btn-primary mx-3 '>Update</button>
+              <button className='btn btn-light mx-3' type='reset'>Reset</button>
             </div>
           </form>
         </div>
