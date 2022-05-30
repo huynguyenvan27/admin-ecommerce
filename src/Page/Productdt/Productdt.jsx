@@ -6,14 +6,18 @@ import { useGetProductByIdQuery } from '../../services/product.service'
 import { useState } from 'react'
 import { convertBase64 } from '../../util'
 import Loading from '../../Component/Loading/Loading'
+import { selectProductById } from '../../store/slices/product.slice'
+import { useSelector } from 'react-redux'
 export default function Productdt() {
   const {id} = useParams()
   const  [size,setSize] = useState([])
-  const {data,isFetching,isSuccess} = useGetProductByIdQuery(id)
+  // const {data,isFetching,isSuccess} = useGetProductByIdQuery(id)
 
-  const [updateProduct,{isLoading}] = useUpdateProductMutation()
+  const [updateProduct,{isLoading,isSuccess}] = useUpdateProductMutation()
 
   const {handleSubmit,register,formState:{errors},reset,getValues} = useForm()
+
+  const data = useSelector(selectProductById(id))
 
   useEffect ( () => {
     if(data){
@@ -40,13 +44,15 @@ export default function Productdt() {
       id
     ])
   }
-  const [imgCover,setImgCover] = useState(false)
+  const [imgCover,setImgCover] = useState(data.img)
 
   const handleDeteleCover = () => {
-    setImgCover(true)
+    setImgCover("")
   }
-  
-  
+  const handleUndoCover = () => {
+    setImgCover(data.img)
+  }
+
   const onSubmit = async (product) => {
     const arr = []
 
@@ -55,20 +61,21 @@ export default function Productdt() {
     }
     // Convert file image to base 64
     const base64Detail = await Promise.all(arr)
-    const base64Cover = ""
+    let base64Cover = ""
     if(product.img){
       base64Cover = await convertBase64 (product.img[0]) ;
     }
+
     const list = [...data.imgLg].filter((item,id) => !imgList.includes(id))
     const newData = {
       ...product,
-      id : data.id,
-      img : data.img.concat(base64Cover),
+      id : id,
+      img : imgCover.concat(base64Cover),
       imgDetail:[...list].concat([...base64Detail]),
       imgLg: [...list].concat([...base64Detail]),
       list_size : [...size]
   }
-  console.log(newData);
+
     await(updateProduct(newData)
     )
   }
@@ -80,7 +87,7 @@ export default function Productdt() {
 
   var result = range(35, 45, 0.5);
 
-  if(isFetching){
+  if(!data){
     return <Loading/>
   }
   if(isLoading){
@@ -187,14 +194,17 @@ export default function Productdt() {
                 type="file" 
                 name='img' 
                 id="formFile"
-                {...imgCover ?  {...register("img",{required:true})} : null }
+                {...imgCover ? null : {...register("img",{required:true})} }
                 // {...register("img",{required:true})}
               />
               {errors.img  && <li className='text-danger'>Image Cover is required!</li>}
             </div>
             <div className="text-center">
               <img className='mb-1 col-lg-6 col-sm-12' style={{border:"1px solid #ccc"}}  src={data.img}  Width={"100%"} />
-              <button className='btn btn-danger d-block mx-auto' onClick = {handleDeteleCover}>Detele</button>
+              <div className='mx-auto'>
+                <button className='btn btn-danger  mx-3' onClick = {handleDeteleCover}>{!imgCover ? "Đã xóa" : "Detele"}</button>
+                { !imgCover? <button className='btn btn-primary mx-3' onClick = {handleUndoCover}>Hoàn tác</button> : ""}
+              </div>
             </div>
             
             <div className="mt-5 mb-3">
@@ -212,11 +222,11 @@ export default function Productdt() {
             </div>
             <div className="row d-flex justify-content-between">
               {
-                data.imgLg?.map((i,id) => {
+                data.imgLg?.map((i,index) => {
                   return (
-                    <div className='col-lg-6 col-sm-12 mb-5 text-center' key={id}>
+                    <div className='col-lg-6 col-sm-12 mb-5 text-center' key={index}>
                       <img src={i}  Width={"100%"} style={{border:"1px solid #ccc"}} className= "m-1"/>
-                      <button className='btn btn-danger d-block mx-auto' onClick={() => handleDetele(id)}>Detele</button>
+                      <button className='btn btn-danger d-block mx-auto' onClick={() => handleDetele(index)}>Detele</button>
                     </div>
                   )
                 })

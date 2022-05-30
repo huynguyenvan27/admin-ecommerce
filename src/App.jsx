@@ -3,12 +3,13 @@ import React, { useEffect } from 'react'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "./services/user.service";
+import Loading from "./Component/Loading/Loading";
 export default function App() {
   const [user,setUser] = useState({
     email : "",
     password : ""
   })
-  const [login,{data}] = useLoginMutation()
+  const [login,{data,isLoading}] = useLoginMutation()
   let navigate = useNavigate();
   const handleLogin =   async (e) => {
     e.preventDefault();
@@ -26,9 +27,12 @@ export default function App() {
       [e.target.name] : e.target.value
     })
   }
+  if(isLoading){
+    return <Loading/>
+  }
   return (
     <div className="App d-flex justify-content-center align-items-center">
-    <div className='col-3'>
+    <div className='col-lg-3 col-sm-6 col-xs-12'>
       <form onSubmit = {(e) => handleLogin(e)}>
         <div className="mb-3">
           <input type="text" name='email' onChange={(e) => handleChange(e)} placeholder='Email' className='form-control'/>

@@ -38,8 +38,8 @@ const productSlice = createSlice({
 export default productSlice.reducer;
 
 export const selectAllProducts = (state) => state.products;
-export const selectProductById = (id) => (state) =>{
+export const selectProductById = (id) => (state) =>
     state.products.find((item) => item.id == id)
-}
+
     
 export const {removeProduct} = productSlice.actions

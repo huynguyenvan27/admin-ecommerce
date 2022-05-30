@@ -109,8 +109,7 @@ export default function AddProduct() {
 
             <div className="mb-3">
               <label htmlFor="brand" className="form-label">Chọn Size</label>
-              <SizeList handleSize = {handleSize} />
-              {/* {errors.size && <li>Size is required!</li>} */}
+              <SizeList handleSize = {handleSize}  />
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">Price</label>
