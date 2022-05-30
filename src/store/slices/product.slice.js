@@ -24,6 +24,13 @@ const productSlice = createSlice({
                 state.push(action.payload)
             }
         );
+        builder.addMatcher(
+            productApi.endpoints.updateProduct.matchFulfilled,
+            (state, action) => {
+                const product = state.products.find((item) => item.id == action.payload.id);
+                product = action.payload
+            }
+        );
 
     },
 });
