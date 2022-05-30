@@ -26,7 +26,7 @@ export default function AddProduct() {
 
   // validation form
 
-  const {handleSubmit,register,formState:{errors},reset,getValues} = useForm()
+  const {handleSubmit,register,formState:{errors},reset} = useForm()
 
     const onSubmit = async (data) => {
       console.log("data",data);
